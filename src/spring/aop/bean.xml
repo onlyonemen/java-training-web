@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+     classpath:/org/springframework/beans/factory/xml/spring-beans-2.0.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx">
+
+	<!-- 配置目标对象 -->
+	<bean id="personTarget" class="spring.aop.PersonImpl">
+		<!-- 为目标对象注入name属性值 -->
+		<property name="name">
+			<value>Wawa</value>
+		</property>
+		<!-- 为目标对象注入age属性值 -->
+		<property name="age">
+			<value>51</value>
+		</property>
+	</bean>
+
+	<!-- 第一个拦截器 -->
+	<bean id="myAdvice" class="spring.aop.MyBeforeAdvice">
+	</bean>
+	<!-- 第二个拦截器 -->
+	<bean id="myAroundInterceptor" class="spring.aop.MyAroundInterceptor" />
+	<!-- 将拦截器包装成Advisor，该对象还确定代理对怎样的方法增加处理 -->
+	<bean id="runAdvisor"
+		class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+		<!-- advice属性确定处理bean -->
+		<property name="advice">
+			<!-- 此处的处理bean定义采用嵌套bean,也可引用容器的另一个bean -->
+			<bean class="spring.aop.MyAfterAdvice" />
+		</property>
+		<property name="pattern">
+			<value>.*run.*</value>
+		</property>
+	</bean>
+
+	<!-- 使用ProxyFactoryBean 产生代理对象 -->
+	<bean id="person" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<!-- 代理对象所实现的接口 -->
+		<property name="proxyInterfaces" value="spring.aop.Person" />
+		<!-- 设置目标对象 -->
+		<property name="target" ref="personTarget" />
+		<!-- 代理对象所使用的拦截器 -->
+		<property name="interceptorNames">
+			<list>
+				<!-- <value>myAdvice</value> -->
+				<!-- <value>myAroundInterceptor</value> -->
+				<value>runAdvisor</value>
+			</list>
+		</property>
+	</bean>
+
+
+</beans>

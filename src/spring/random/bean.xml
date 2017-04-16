@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+     classpath:/org/springframework/beans/factory/xml/spring-beans-2.0.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+> 
+
+	<bean id="ran" class="spring.random.Random" scope="prototype"/><!-- scope="prototype" 每次获取该bean 生成新的对象 --> 
+	<!--  <bean id="ran" class="spring.random.Random" scope="singleton"/> --> <!-- 单例模式 bean -->
+    <bean id="hello" class="spring.random.HelloAbstract">
+        <lookup-method name="createRandom" bean="ran"/><!--将HelloAbstract中createRandom方法的返回对象作为ran bean  -->
+        <property name="random" ref="ran"/>
+    </bean>   
+</beans>
